@@ -1,0 +1,311 @@
+<html>
+	<head>
+		<title>SRCP.js</title>
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=0">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<link rel="apple-touch-icon" href="apple-touch-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="apple-touch-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png">
+		
+		<script type="text/javascript" src="script/ios-drag-drop.js?1"></script>
+
+		<script type="text/javascript" src="script/jquery.js?1"></script>
+		<script type="text/javascript" src="script/ui.js?1"></script>
+		<script type="text/javascript" src="script/utils.js?1"></script>
+		<link rel="stylesheet" type="text/css" href="style/ui.css?1">
+		<link rel="stylesheet" type="text/css" href="style/style.css?1">
+
+		<script type="text/javascript" src="script/websockify/base64.js"></script>
+		<script type="text/javascript" src="script/websockify/util.js"></script>
+        <script type="text/javascript" src="script/websockify/websock.js"></script>
+        <script type="text/javascript" src="script/srcp_session.js"></script>
+
+        <script type="text/javascript" src="script/cli.js"></script>
+        <script type="text/javascript" src="script/devices.js"></script>
+
+        <script type="text/javascript">
+        	INFOSession = function() {}
+        	INFOSession.prototype = new SRCPSession("INFO")
+
+        	INFOSession.prototype.info_handler = function(msg) {
+        		switch(msg.device_group) {
+        			case "GM":
+        				$("#generic_messages").append(msg.content[1]+"-->"+msg.content[0]+" ["+msg.content[2]+"]: "+msg.content.slice(3).join(" ")+"\n")
+        				break
+        			case "GA":
+        				if(msg.status_code==100) {
+        					bus = buses[msg.bus]
+        					if(bus===undefined)
+        						return
+        					device_group=bus.device_groups[msg.device_group]
+        					if(device_group===undefined)
+        						return
+        					
+        					device = device_group.devices[msg.content[0]]
+
+        					data = {
+        						addr:msg.content[0],
+        						port:msg.content[1]
+        					}
+        					
+        					device.data(data)
+        					updateDevice(device)
+        				}
+        				if(msg.status_code==101) {
+        					addGA({
+        						bus:msg.bus,
+				       			addr:msg.content[0],
+				       			prot:msg.content[1],
+				       			name:"New Accessory",
+				       			type:"turnout_right"
+				       		})
+        				}
+        				break
+        			case "GL":
+        				if(msg.status_code==100) {
+        					bus = buses[msg.bus]
+        					if(bus===undefined)
+        						return
+        					device_group=bus.device_groups[msg.device_group]
+        					if(device_group===undefined)
+        						return
+        					
+        					device = device_group.devices[msg.content[0]]
+
+        					data = {
+        						addr:msg.content[0],
+        						drivemode:msg.content[1],
+        						v:msg.content[2],
+        						v_max:msg.content[3]
+        					}
+        					for(var i=1; i<msg.content.length-3; i++) {
+        						data["f"+i]=msg.content[i+3]
+        					}
+
+        					device.data(data)
+        					updateDevice(device)
+        				}
+        				if(msg.status_code==101) {
+        					addGL({
+        						bus:msg.bus,
+				       			addr:msg.content[0],
+				       			prot:msg.content[1],
+				       			name:"New Loco",
+				       			type:"steam",
+				       			v:0,
+				       			v_max:100,
+				       			drivemode:1
+				       		})
+        				}
+        				break
+        			default:
+        				console.log("INFO handler cant handle device_group: "+msg.device_group)
+        		}
+       		}
+       		
+       		
+       		var log_response = function(msg) {
+       			var _msg = ""
+       			if(this.session_id<0) {
+       				if(msg.timestamp=="SRCP") {
+	       				_msg += msg.raw
+    				} else {
+    					_msg += "<span class='timestamp'>"+msg.timestamp+"</span> "
+       					_msg += "<span class='status'>" + msg.status_code + " " + msg.status_text + "</span> "
+       					_msg += "<span class='content'>"+msg.content.join(" ")+"</span>"
+    				}
+       			} else {
+       				_msg += "<span class='timestamp'>"+msg.timestamp+"</span> "
+       				_msg += "<span class='status'>" + msg.status_code + " " + msg.status_text + "</span> "
+       				if(msg.bus!==undefined)
+	       				_msg += "<span class='bus'>"+msg.bus + "</span> "
+	       			if(msg.device_group!==undefined)
+	       				_msg += "<span class='device_group'>"+msg.device_group + "</span> "
+       				_msg += "<span class='content'>"+msg.content.join(" ")+"</span>"
+       			}
+
+  				_msg += "<br>"
+       			$("#log").append(_msg)
+       			$("#log_container").scrollTop($('#log').height())
+       		}
+
+       		var log_command = function(cmd) {
+       			var _msg  = "<span class='action'>" + cmd.action + "</span> "
+       				_msg += "<span class='bus'>"+cmd.bus + "</span> "
+       				_msg += "<span class='device_group'>"+cmd.device_group + "</span> "
+       				_msg += "<span class='content'>"+cmd.command+"</span>"
+       				_msg += "<br>"
+       			$("#log").append(_msg)
+       			$("#log").scrollTop($('#log').height())
+       		}
+
+       		INFOSession.prototype.log_msg = log_response
+
+       		info_session = new INFOSession()
+       		command_session = new SRCPSession("COMMAND")
+
+
+       		
+
+        	
+
+
+			//ADDING SOME DEVICES FOR DEMO
+			$(function() {
+
+	       		addGL({
+	       			bus:1,
+	       			addr:24,
+	       			prot:"M1",
+	       			name:"Tenderlock",
+	       			type:"steam",
+	       			v:0,
+	       			v_max:100,
+	       			drivemode:1
+	       		})
+	       		addGL({
+	       			bus:1,
+	       			addr:28,
+	       			prot:"M1",
+	       			name:"BR 80",
+	       			type:"steam",
+	       			v:0,
+	       			v_max:100,
+	       			drivemode:1
+	       		})
+	       		addGL({
+	       			bus:1,
+	       			addr:21,
+	       			prot:"N",
+	       			name:"Cargo",
+	       			type:"diesel",
+	       			v:0,
+	       			v_max:100,
+	       			drivemode:1
+	       		})
+	       		addGL({
+	       			bus:1,
+	       			addr:80,
+	       			prot:"M2",
+	       			name:"Regio-Express",
+	       			type:"electro",
+	       			v:0,
+	       			v_max:100,
+	       			drivemode:1
+	       		})
+
+	       		addGA({
+	       			bus:1,
+	       			addr:24,
+	       			prot:"M",
+	       			name:"Weiche Abstellgleis",
+	       			type:"turnout_right"
+	       		})
+	       		addGA({
+	       			bus:1,
+	       			addr:21,
+	       			prot:"N",
+	       			name:"Weiche Bahnhof",
+	       			type:"turnout_right"
+	       		})
+
+	       		addPOWER({
+	       			bus:1,
+	       			name:"Gleisbox"
+	       		})	       		
+	       		
+	       	})
+			
+			
+
+        </script>
+    </head>
+    <body>
+    	<div id="header">
+    		SRCP.js
+    		<a href="javascript:editMode()" id="edit">Edit</a>
+    	</div>
+    	<div id="pageOuter"><div id="pageMiddle"><div id="pageInner">
+	    	<div id="GL_container" class="container scrollable">
+	    		<div class="device addDevice"><span class="add">+</span></div>
+	    	</div>
+	    	<div id="GA_container" class="container scrollable">
+	    		<div class="device addDevice"><span class="add">+</span></div>
+	    	</div>
+	    	<div id="POWER_container" class="container scrollable">
+	    		<div class="device addDevice"><span class="add">+</span></div>
+	    	</div>
+	    	<div id="log_container" class="container scrollable">
+	    		<div id="log">
+				</div>
+				<form id="cli_container" onSubmit="alert('a')">
+					&gt;
+					<input type="text" class="cli_input autoresize_input" id="command_input"	  placeholder="cmd">
+					<input type="text" class="cli_input autoresize_input" id="bus_input"		  placeholder="bus">
+					<input type="text" class="cli_input autoresize_input" id="device_group_input" placeholder="device">
+					<input type="text" class="cli_input autoresize_input" id="content_input"	  placeholder="content">
+	    		</form>
+	    	</div>
+
+		    <div id="prototypes" style="display:none">
+		    	<div class="device GL" data-addr="0" data-drivemode="0" data-v="0" data-vmax="0">
+		    		<div class="drag" draggable="true"></div>
+		    		<div class="info">
+		    			<img class="icon" src="">
+		    			<span class="edit prot">M1</span>
+		    			<span class="edit addr">1</span>
+		    			<span class="edit name">Loco 1</span>
+		    			<input class="stop" type="button" value="STOP">
+		    		</div>
+		    		<div class="movement">
+		    			<div class="bwd">&lt;</div>
+			    		<input class="speed" type="range" min="0" max="100" value="0" step="1" data-color-left="#DD0000">
+			    		<div class="fwd">&gt;</div>
+			    	</div>
+			    	<div class="functions">
+				    	<span class="function f1">f1</span>
+				    	<span class="function f2">f2</span>
+				    	<span class="function f3">f3</span>
+				    	<span class="function f4">f4</span>
+				    	<span class="function f5">f5</span>
+				    	<span class="function f6">f6</span>
+				    	<span class="function f7">f7</span>
+				    	<span class="function f8">f8</span>
+				    	<span class="function f9">f9</span>
+				    	
+				    </div>
+		    	</div>
+		    	<div class="device GA" data-addr="0">
+		    		<div class="drag" draggable="true"></div>
+		    		<div class="info">
+		    			<img class="icon" src="">
+		    			<span class="edit prot">M</span>
+		    			<span class="edit addr">1</span>
+		    			<span class="edit name">Turnout 1</span>
+		    			<input class="toggle" type="checkbox">
+		    		</div>
+		    	</div>
+		    	<div class="device POWER" data-bus="1">
+		    		<div class="drag" draggable="true"></div>
+		    		<div class="info">
+		    			<img class="icon" src="">
+		    			<span class="edit bus">1</span>
+		    			<span class="edit name">Bus 1</span>
+		    			<input class="toggle" type="checkbox">
+		    		</div>
+		    	</div>
+		    </div>
+	    	<pre id="generic_messages"></pre>
+	    </div></div></div>
+    	<div id="navbar">
+    		<span data-name="GL"><img src="images/GL.png" height="28px"><br>Locomotives</span>
+    		<span data-name="GA"><img src="images/GA.png" height="25px"><br>Accessories</span>
+    		<span data-name="POWER"><img src="images/POWER.png" height="25px"><br>Power</span>
+    		<span data-name="log"><img src="images/log.png" height="23px"><br>Log</span>
+    	</div>
+    </body>
+</html>
