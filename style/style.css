@@ -302,22 +302,25 @@ input {
 		right:0px;
 		width:44px;
 		height:28px;
-		border:0px solid #ccc;
-		background:#e00;
+		border:1px solid #ccc;
+		background:transparent;
 		border-radius: 7px;
 		text-align: center;
-		color:#fff;
+		color:#ccc;
 		padding:0;
 		outline:none;
 		z-index:3;
 	}
 
-	.device .info .stop:hover {
-		background:#f00;
+	.device .info .stop:hover, .device .info .stop.active {
+		color:#e00;
+		border-color:#e00;
 	}
 
 	.device .info .stop:active {
-		background:#d00;
+		background:#e00;
+		color:#fff;
+		border-color:#e00;
 	}
 
 

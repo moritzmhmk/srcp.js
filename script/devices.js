@@ -295,6 +295,7 @@ $(function() {
               $GL.data("drivemode", 0)
               $(this).addClass("active")
               $GL.find(".fwd").removeClass("active")
+              $GL.find(".stop").removeClass("active")
               GL_changed($GL)
        })
 
@@ -303,6 +304,7 @@ $(function() {
               $GL.data("drivemode", 1)
               $(this).addClass("active")
               $GL.find(".bwd").removeClass("active")
+              $GL.find(".stop").removeClass("active")
               GL_changed($GL)
        })
 
@@ -311,6 +313,7 @@ $(function() {
               $GL.data("drivemode", 2)
               $GL.find(".fwd").removeClass("active")
               $GL.find(".bwd").removeClass("active")
+              $GL.find(".stop").addClass("active")
               GL_changed($GL)
        })
 
