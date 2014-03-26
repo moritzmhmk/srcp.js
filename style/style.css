@@ -361,17 +361,27 @@ input {
 		margin-left: 5%;
 		width:90%;
 	}
-	.GL .movement .bwd {
+	.GL .movement .bwd, .GL .movement .fwd {
 		position: absolute;
-		top:0px;
-		left:3px;
+		top:2px;
+		
+		width:19px;
+		height:19px;
+
 		color:#ccc;
+
+		opacity: 0.5;
+
+		transition:opacity .5s;
+	}
+	.GL .movement .bwd {
+		left:3px;
 	}
 	.GL .movement .fwd {
-		position: absolute;
-		top:0px;
 		right:3px;
-		color:#000;
+	}
+	.GL .movement .active {
+		opacity: 1.0;
 	}
 
 .GL .functions {

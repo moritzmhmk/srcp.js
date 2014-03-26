@@ -129,11 +129,11 @@ var updateDevice = function($device) {
               $device.find(".speed").prop("max",data.v_max)
 
               if(data.drivemode==0) {
-                     $device.find(".bwd").css("color","#000")
-                     $device.find(".fwd").css("color", "#ccc")
+                     $device.find(".bwd").addClass("active")
+                     $device.find(".fwd").removeClass("active")
               } else {
-                     $device.find(".bwd").css("color","#ccc")
-                     $device.find(".fwd").css("color", "#000")
+                     $device.find(".bwd").removeClass("active")
+                     $device.find(".fwd").addClass("active")
               }
               
               
@@ -293,22 +293,24 @@ $(function() {
        $(".GL .bwd").on("click", function() {
               $GL = $(this).closest(".GL")
               $GL.data("drivemode", 0)
-              $(this).css("color","#000")
-              $GL.find(".fwd").css("color", "#ccc")
+              $(this).addClass("active")
+              $GL.find(".fwd").removeClass("active")
               GL_changed($GL)
        })
 
        $(".GL .fwd").on("click", function() {
               $GL = $(this).closest(".GL")
               $GL.data("drivemode", 1)
-              $(this).css("color","#000")
-              $GL.find(".bwd").css("color", "#ccc")
+              $(this).addClass("active")
+              $GL.find(".bwd").removeClass("active")
               GL_changed($GL)
        })
 
        $(".GL .stop").on("click", function() {
               $GL = $(this).closest(".GL")
               $GL.data("drivemode", 2)
+              $GL.find(".fwd").removeClass("active")
+              $GL.find(".bwd").removeClass("active")
               GL_changed($GL)
        })
 
