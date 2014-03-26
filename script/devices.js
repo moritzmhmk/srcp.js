@@ -314,9 +314,19 @@ $(function() {
 
        $(".GL .speed").on("change", function() {
               $GL = $(this).closest(".GL")
+              
+              clearTimeout($GL.data("_speed_change_timeout"))
+
               $GL.data("v", $(this).val())
               $GL.data("vmax", $(this).prop("max"))
-              GL_changed($GL)
+
+              $GL.data("_speed_change_timeout",
+                     setTimeout($.proxy(function() {
+                            GL_changed(this)
+                     },$GL),250)
+              )
+
+              
        })
 
        $(".GL .function").on("click", function() {
