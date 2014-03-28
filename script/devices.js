@@ -14,7 +14,7 @@ var find_device_group = function(elem) {
 jQuery.event.props.push( "dataTransfer" )
 
 var drag_and_drop_placeholder_height=30
-var drag_and_drop_dropped = false
+var drag_and_drop_delete_original = false
 //switching between normal and edit mode
 editMode=function() {
        $edit = $("#edit")
@@ -55,13 +55,12 @@ editMode=function() {
                      $(".device").css("border-top","0px")
 
                      $(this).css("opacity",1.0)
-                     if(drag_and_drop_dropped)//if(e.dataTransfer.dropEffect=="move")
+                     if(drag_and_drop_delete_original)//if(e.dataTransfer.dropEffect=="move")
                             $(this).remove()
                      console.log("dragend",e)
               })
 
               $(".device").on("drop", function(e) {
-                     drag_and_drop_dropped=true
                      e.preventDefault()
                      $(".device").children().css("pointer-events","auto")
                      $(".device").css("border-top","0px")
@@ -72,11 +71,14 @@ editMode=function() {
                      data = JSON.parse(e.dataTransfer.getData("text/plain"))
                      //console.log("data", data)
 
-                     $draged_device = createDevice(data)
+                     created = createDevice(data,true)
+                     $draged_device = created.device
                      //console.log("draged_device", $draged_device)
 
                      $draged_device.insertBefore($device)
                      //console.log("drop",e)
+
+                     drag_and_drop_dropped=created.new
               })
 
 
@@ -149,7 +151,7 @@ var updateDevice = function($device) {
        if(data.device_group=="GA") {
               $device.find(".prot").text(data.prot)
               $device.find(".addr").text(data.addr)
-              //TODO set toggle state
+              
               if(data.port==1)
                      $device.find(".toggle").prop('checked',true)
               else
@@ -157,7 +159,10 @@ var updateDevice = function($device) {
        }
        if(data.device_group=="POWER") {
               $device.find(".bus").text(data.bus)
-              //TODO set toggle state
+              if(data.onoff=="ON")
+                     $device.find(".toggle").prop('checked',true)
+              else
+                     $device.find(".toggle").removeAttr('checked')
        }
 }
 var createDevice = function(data) {
@@ -178,37 +183,42 @@ var createDevice = function(data) {
        }
        devices = bus.device_groups[data.device_group].devices
        
-       if(devices[data.addr]!==undefined) {
+       if(devices[data.addr]==undefined) {
+              devices[data.addr]=$device
+       
+       } else {
               console.log("[WARNING] device of type "+data.device_group+" with address "+data.addr+" already exists on bus "+data.bus)
-              //TODO
+              //TODO find better way?
+              return {device:devices[data.addr], new:false}
        }
-       devices[data.addr]=$device
-
-
-       return $device
+       
+       return {device:$device, new:true}
 }
 //adding new GL
 var addGL = function(data) {
        data["device_group"]="GL"
-	$GL = createDevice(data)
 
-	$GL.insertBefore( $( "#GL_container .addDevice" ) )
+       created = createDevice(data)
+       if(created.new)
+              created.device.insertBefore( $( "#GL_container .addDevice" ) )
 }
 
 //adding new GA
 var addGA = function(data) {
 	data["device_group"]="GA"
-       $GA = createDevice(data)
 
-	$GA.insertBefore( $( "#GA_container .addDevice" ) )
+       created = createDevice(data)
+       if(created.new)
+              created.device.insertBefore( $( "#GA_container .addDevice" ) )
 }
 
 //adding new POWER
 var addPOWER = function(data) {
 	data["device_group"]="POWER"
-       $POWER = createDevice(data)
 
-	$POWER.insertBefore( $( "#POWER_container .addDevice" ) )
+       created = createDevice(data)
+       if(created.new)
+              created.device.insertBefore( $( "#POWER_container .addDevice" ) )
 }
 
 
@@ -354,6 +364,7 @@ $(function() {
               $GA = $(this).closest(".GA")
               addr=$GA.data("addr")
               port=$GA.find(".toggle").prop('checked')?1:0
+              $GA.data("port",port)
 
               cmd = [addr, port, 1, 200].join(" ")
               console.log(cmd)
@@ -370,7 +381,9 @@ $(function() {
        $(".POWER .toggle").on("change", function(e) {
               $POWER = $(this).closest(".POWER")
               bus=$POWER.data("bus")
-              cmd=$POWER.find(".toggle").prop('checked')?"ON":"OFF"
+              onoff=$POWER.find(".toggle").prop('checked')?"ON":"OFF"
+              $POWER.data("onoff",onoff)
+
 
               console.log(cmd)
               if(command_session.session_id==-1)
@@ -378,6 +391,6 @@ $(function() {
               command_session.add_handler_to_queue(function(msg) {
                      console.log("Power changed: ",msg)
        })
-              command_session.send({action:"SET", bus:bus, device_group:"POWER", command:cmd})
+              command_session.send({action:"SET", bus:bus, device_group:"POWER", command:onoff})
        })
 })
