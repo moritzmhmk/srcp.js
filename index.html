@@ -184,47 +184,77 @@
 
 			//ADDING SOME DEVICES FOR DEMO
 			command_session.add_handshake_successful_handler_to_queue(function(id) {
-				var _handler = function(msg) {
+				var _handler1 = function(msg) {
                      console.log("device added: ",msg)
             	}
+            	var _handler2 = function(msg) {
+                     console.log("got info on added device: ",msg)
+            	}
 
-	       		command_session.add_handler_to_queue(_handler)
+	       		command_session.add_handler_to_queue(_handler1)
               	var cmd = "24 M 1 1000 9"
               	command_session.send({action:"INIT", bus:1, device_group:"GL", command:cmd})
+              	command_session.add_handler_to_queue(_handler2)
+              	var cmd = "24"
+              	command_session.send({action:"GET", bus:1, device_group:"GL", command:cmd})
 
-              	command_session.add_handler_to_queue(_handler)
+              	command_session.add_handler_to_queue(_handler1)
               	var cmd = "28 M 1 1000 9"
               	command_session.send({action:"INIT", bus:1, device_group:"GL", command:cmd})
+              	command_session.add_handler_to_queue(_handler2)
+              	var cmd = "28"
+              	command_session.send({action:"GET", bus:1, device_group:"GL", command:cmd})
               	
-              	command_session.add_handler_to_queue(_handler)
+              	command_session.add_handler_to_queue(_handler1)
               	var cmd = "21 N 1 1000 9"
               	command_session.send({action:"INIT", bus:1, device_group:"GL", command:cmd})
+              	command_session.add_handler_to_queue(_handler2)
+              	var cmd = "21"
+              	command_session.send({action:"GET", bus:1, device_group:"GL", command:cmd})
 
-				command_session.add_handler_to_queue(_handler)
+				command_session.add_handler_to_queue(_handler1)
               	var cmd = "80 M 2 1000 9"
               	command_session.send({action:"INIT", bus:1, device_group:"GL", command:cmd})
+              	command_session.add_handler_to_queue(_handler2)
+              	var cmd = "80"
+              	command_session.send({action:"GET", bus:1, device_group:"GL", command:cmd})
               	
 
-              	command_session.add_handler_to_queue(_handler)
+              	command_session.add_handler_to_queue(_handler1)
               	var cmd = "1 N"
               	command_session.send({action:"INIT", bus:1, device_group:"GA", command:cmd})
+              	command_session.add_handler_to_queue(_handler2)
+              	var cmd = "1 1"
+              	command_session.send({action:"GET", bus:1, device_group:"GA", command:cmd})
               	
-              	command_session.add_handler_to_queue(_handler)
+              	command_session.add_handler_to_queue(_handler1)
               	var cmd = "11 N"
               	command_session.send({action:"INIT", bus:1, device_group:"GA", command:cmd})
+              	command_session.add_handler_to_queue(_handler2)
+              	var cmd = "11 1"
+              	command_session.send({action:"GET", bus:1, device_group:"GA", command:cmd})
 
-              	command_session.add_handler_to_queue(_handler)
+              	command_session.add_handler_to_queue(_handler1)
               	var cmd = "12 N"
               	command_session.send({action:"INIT", bus:1, device_group:"GA", command:cmd})
+              	command_session.add_handler_to_queue(_handler2)
+              	var cmd = "12 1"
+              	command_session.send({action:"GET", bus:1, device_group:"GA", command:cmd})
 
-              	command_session.add_handler_to_queue(_handler)
+              	command_session.add_handler_to_queue(_handler1)
               	var cmd = "41 N"
               	command_session.send({action:"INIT", bus:1, device_group:"GA", command:cmd})
+              	command_session.add_handler_to_queue(_handler2)
+              	var cmd = "41 1"
+              	command_session.send({action:"GET", bus:1, device_group:"GA", command:cmd})
               	
 
-              	command_session.add_handler_to_queue(_handler)
+              	command_session.add_handler_to_queue(_handler1)
               	var cmd = ""
               	command_session.send({action:"INIT", bus:1, device_group:"POWER", command:cmd})
+              	command_session.add_handler_to_queue(_handler2)
+              	var cmd = ""
+              	command_session.send({action:"GET", bus:1, device_group:"POWER", command:cmd})
               	   		
 	       		
 	       	})

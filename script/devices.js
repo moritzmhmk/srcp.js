@@ -133,9 +133,17 @@ var updateDevice = function($device) {
               if(data.drivemode==0) {
                      $device.find(".bwd").addClass("active")
                      $device.find(".fwd").removeClass("active")
-              } else {
+                     $device.find(".stop").removeClass("active")
+              }
+              if(data.drivemode==1) {
                      $device.find(".bwd").removeClass("active")
                      $device.find(".fwd").addClass("active")
+                     $device.find(".stop").removeClass("active")
+              }
+              if(data.drivemode==2) {
+                     $device.find(".bwd").removeClass("active")
+                     $device.find(".fwd").removeClass("active")
+                     $device.find(".stop").addClass("active")
               }
               
               
@@ -346,7 +354,7 @@ $(function() {
 
        $(".GL .function").on("click", function() {
               $GL = $(this).closest(".GL")
-              _f = $(this).text()
+              _f = $(this).text().trim()
               _old = $GL.data(_f)
               $GL.data(_f, !_old)
               if(!_old) {
@@ -385,7 +393,7 @@ $(function() {
               $POWER.data("onoff",onoff)
 
 
-              console.log(cmd)
+              //console.log(onoff)
               if(command_session.session_id==-1)
                      return
               command_session.add_handler_to_queue(function(msg) {
