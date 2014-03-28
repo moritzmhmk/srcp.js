@@ -6,6 +6,8 @@ var SRCPSession = function(type) {
 
 	this.msg_handler_queue = []
 
+	this.handshake_successful_handler_queue = []
+
 	this.session.on('message', function() {
 		console.log("MESSAGE EVENT for session "+self.session_id+" ("+self.session_type+")")
 		var msg=""
@@ -40,6 +42,10 @@ SRCPSession.prototype.add_handler_to_queue = function(handler) {
 	this.msg_handler_queue.push(handler)
 }
 
+SRCPSession.prototype.add_handshake_successful_handler_to_queue = function(handler) {
+	this.handshake_successful_handler_queue.push(handler)
+}
+
 SRCPSession.prototype.send = function(cmd) {
 	raw_cmd = cmd.action + " " + cmd.bus + " " + cmd.device_group + " " + cmd.command
 
@@ -62,6 +68,13 @@ SRCPSession.prototype.handshake_handler = function(msg) {
     if(msg.status_code=="200") {
     	this.session_id = msg.content[0]
     	console.log("Got Session ID: "+this.session_id,this)
+    	
+    	
+		while(this.handshake_successful_handler_queue.length > 0) {
+			handler = this.handshake_successful_handler_queue.shift()
+			console.log(handler)
+			handler(this.session_id)
+		}
     }
 }
 
