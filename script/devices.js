@@ -10,77 +10,35 @@ var find_device_group = function(elem) {
        return device_group
 }
 
-//fix for jquery with html5 drag n drop
-jQuery.event.props.push( "dataTransfer" )
-
-var drag_and_drop_placeholder_height=30
-var drag_and_drop_delete_original = false
+$(function() {
+       $(".delete_circle").on("click",function(e) {
+              $device = $(this).closest(".device")
+              $device.css({"left":-$(".delete").width()})
+              $device.on("click", function(e) {
+                     $device = $(this).closest(".device")
+                     $device.css({"left":"0px"})
+                     $device.off("click")
+              })
+              return false
+       })
+       $(".delete").on("click",function(e) {
+              $device = $(this).closest(".device")
+              $device.slideUp('fast', function(){ $(this).remove() })
+       })
+})
 //switching between normal and edit mode
 editMode=function() {
        $edit = $("#edit")
        if($edit.text()=="Edit") {
               $(".addDevice").show()
+              
+              $(".device").css("padding-left","40px")
+              $(".delete_circle").show()
+              $(".delete").show()
+              $(".delete").css({"right":-$(".delete").width()})
 
-
-              //$(".device").not(".addDevice").prop("draggable",true)
+              $(".device").css("padding-right","40px")
               $(".drag").show()
-              $(".device").css("padding-left","10%")
-              $(".drag").on("dragstart", function(e) {
-                     drag_and_drop_dropped=false
-                     $device = $(this).closest(".device")
-                     e.dataTransfer.setData("text/plain", JSON.stringify($device.data()))
-                     $device.css("opacity",0.5)
-                     drag_and_drop_placeholder_height=$device.outerHeight()
-
-                     e.dataTransfer.setDragImage($device.get( 0 ),0, drag_and_drop_placeholder_height/2);
-
-                     $(".device").children().not($(this)).css("pointer-events","none")
-              })
-
-              $(".device").on("dragenter", function(e) {
-                     $(this).css("border-top",drag_and_drop_placeholder_height+"px solid #bbb")
-              })
-
-              $(".device").on("dragleave", function(e) {
-                     $(this).css("border-top","0px")
-              })
-
-              $(".device").on("dragover", function(e) {
-                     e.preventDefault()
-                     e.dataTransfer.dropEffect = 'move'
-              })
-
-              $(".device").on("dragend", function(e) {
-                     $(".device").children().css("pointer-events","auto")
-                     $(".device").css("border-top","0px")
-
-                     $(this).css("opacity",1.0)
-                     if(drag_and_drop_delete_original)//if(e.dataTransfer.dropEffect=="move")
-                            $(this).remove()
-                     console.log("dragend",e)
-              })
-
-              $(".device").on("drop", function(e) {
-                     e.preventDefault()
-                     $(".device").children().css("pointer-events","auto")
-                     $(".device").css("border-top","0px")
-
-                     $device = $(this).closest(".device")
-                     //console.log("device", $device)
-
-                     data = JSON.parse(e.dataTransfer.getData("text/plain"))
-                     //console.log("data", data)
-
-                     created = createDevice(data,true)
-                     $draged_device = created.device
-                     //console.log("draged_device", $draged_device)
-
-                     $draged_device.insertBefore($device)
-                     //console.log("drop",e)
-
-                     drag_and_drop_dropped=created.new
-              })
-
 
               $(".edit").prop('contenteditable',true)
 
@@ -95,20 +53,17 @@ editMode=function() {
        } else {
               $(".addDevice").hide()
 
-              //$(".device").removeAttr("draggable")
+              $(".device").css({"left":"0px"})
+              $(".device").css("padding-left","5px")
+              $(".delete_circle").hide()
+              $(".delete").hide()
+              
+
+              $(".device").css("padding-right","5px")
               $(".drag").hide()
-              $(".device").css("padding-left","0")
-
-              $(".drag").off("dragstart")
-              $(".device").off("dragenter")
-              $(".device").off("dragleave")
-              $(".device").off("dragover")
-              $(".device").off("dragend")
-              $(".device").off("drop")
-
+              
               $(".edit").removeAttr('contenteditable').blur()
 
-              //$("input.edit").prop("readonly",true)
               $(".device .icon").off("click")
               $edit.text("Edit")
        }

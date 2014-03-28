@@ -16,7 +16,23 @@ var resizePage = function() {
 
 
 $(function () {
-    
+    new Sortable(GL_container, {
+        group: "devices",
+        draggable: '.device',
+        handle: '.drag'
+    })
+
+    new Sortable(GA_container, {
+        group: "devices",
+        draggable: '.device',
+        handle: '.drag'
+    })
+
+    new Sortable(POWER_container, {
+        group: "devices",
+        draggable: '.device',
+        handle: '.drag'
+    })
 
     //iOS STUFF
     $(window).on("orientationchange", function() {
