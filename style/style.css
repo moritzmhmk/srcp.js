@@ -204,6 +204,7 @@ input {
 
 .device {
 	position: relative;
+	left:0;
 	border-bottom:1px solid #ccc;
 	padding-left: 5px;
 	padding-right: 5px;
@@ -212,17 +213,68 @@ input {
 	background-color: #fff;
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
+
+	transition:left .5s, padding .1s;
 }
 
 .device .drag {
 	position: absolute;
 	top: 0px;
-	left:0px;
+	right:10px;
 	height:100%;
-	width:10%;
-	background-color:rgba(0,0,0,0.1);
+	width:20px;
+	
+	background-image:url("../images/drag.png");
+	background-repeat: repeat-x;
+	background-position: left center;
 	display:none;
 	cursor: move;
+}
+
+.device .delete_circle {
+	position: absolute;
+	top: 0px;
+	left:10px;
+	height:100%;
+	width:20px;
+	
+	background-image:url("../images/delete.png");
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-size: contain;
+	display:none;
+}
+
+.device .delete {
+	position: absolute;
+	top: 0px;
+	right:0px;
+	height:100%;
+	width:auto;
+	
+	background-color:#FF3E22;
+	display:none;
+}
+
+.device .delete:before {
+	display: block;
+	position: relative;
+	height:50%;
+	width:100%;
+	vertical-align: middle;
+	content:" ";
+}
+.device .delete:after {
+	display: block;
+	position: relative;
+	top: -9px;
+	color:#fff;
+	font-size: 18px;
+	line-height: 18px;
+	font-weight: 200;
+	padding-left:10px;
+	padding-right: 10px;
+	content:"delete";
 }
 
 .device .info {

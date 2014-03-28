@@ -11,7 +11,7 @@
 		<link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-152x152.png">
 		<link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png">
 		
-		<script type="text/javascript" src="script/ios-drag-drop.js?1"></script>
+		<script type="text/javascript" src="script/Sortable.min.js?1"></script>
 
 		<script type="text/javascript" src="script/jquery.js?1"></script>
 		<script type="text/javascript" src="script/ui.js?1"></script>
@@ -293,7 +293,7 @@
 
 		    <div id="prototypes" style="display:none">
 		    	<div class="device GL" data-addr="0" data-drivemode="0" data-v="0" data-vmax="0">
-		    		<div class="drag" draggable="true"></div>
+		    		<div class="delete_circle"></div>
 		    		<div class="info">
 		    			<img class="icon" src="">
 		    			<span class="edit prot">M1</span>
@@ -318,9 +318,11 @@
 				    	<span class="function f9">f9</span>
 				    	
 				    </div>
+		    		<div class="drag"></div>
+		    		<div class="delete"></div>
 		    	</div>
 		    	<div class="device GA" data-addr="0">
-		    		<div class="drag" draggable="true"></div>
+		    		<div class="delete_circle"></div>
 		    		<div class="info">
 		    			<img class="icon" src="">
 		    			<span class="edit prot">M</span>
@@ -328,15 +330,19 @@
 		    			<span class="edit name">Turnout 1</span>
 		    			<input class="toggle" type="checkbox">
 		    		</div>
+		    		<div class="drag"></div>
+		    		<div class="delete"></div>
 		    	</div>
 		    	<div class="device POWER" data-bus="1">
-		    		<div class="drag" draggable="true"></div>
+		    		<div class="delete_circle"></div>
 		    		<div class="info">
 		    			<img class="icon" src="">
 		    			<span class="edit bus">1</span>
 		    			<span class="edit name">Bus 1</span>
 		    			<input class="toggle" type="checkbox">
 		    		</div>
+		    		<div class="drag"></div>
+		    		<div class="delete"></div>
 		    	</div>
 		    </div>
 	    	<pre id="generic_messages"></pre>

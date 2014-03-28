@@ -2,6 +2,10 @@
     font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
+.sortable-ghost {
+  opacity: .2;
+}
+
 input[type=range] {
     position:relative;
     outline: none;
