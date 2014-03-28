@@ -48,7 +48,8 @@ This project uses code from the following projects:
 
 * [websockify](https://github.com/kanaka/websockify)
 * [jquery](https://jquery.org/)
-* [timruffles html5 dnd for iOS](https://github.com/timruffles/ios-html5-drag-drop-shim)
+* [~~timruffles html5 dnd for iOS~~](https://github.com/timruffles/ios-html5-drag-drop-shim)
+* [Sortable](https://github.com/RubaXa/Sortable)
 
 *The licenses can be found in the individual files*
 
