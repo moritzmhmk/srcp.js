@@ -108,6 +108,7 @@ input {
 
 .container .addDevice .add {
 	font-size: 30px;
+	color: #555;
 }
 
 #GL_container  {
