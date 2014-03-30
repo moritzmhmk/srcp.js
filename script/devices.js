@@ -12,6 +12,8 @@ var find_device_group = function(elem) {
 
 $(function() {
        $(".delete_circle").on("click",function(e) {
+              $(".delete").show()
+              $(".delete").css({"right":-$(".delete").width()})
               $device = $(this).closest(".device")
               $device.css({"left":-$(".delete").width()})
               $device.on("click", function(e) {
@@ -34,8 +36,7 @@ editMode=function() {
               
               $(".device").css("padding-left","40px")
               $(".delete_circle").show()
-              $(".delete").show()
-              $(".delete").css({"right":-$(".delete").width()})
+              
 
               $(".device").css("padding-right","40px")
               $(".drag").show()
