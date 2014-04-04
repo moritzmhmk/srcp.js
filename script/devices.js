@@ -242,6 +242,7 @@ $(function() {
        //device events for
        ////////////GL
        GL_changed = function($GL) {
+              bus=$GL.data("bus")
               addr=$GL.data("addr")
               drivemode=$GL.data("drivemode")
               v=$GL.data("v")
@@ -250,7 +251,7 @@ $(function() {
               $functions = $GL.find(".function")
               f = new Array($functions.length)
               $functions.each(function() {
-                     _f = $(this).text()
+                     _f = $(this).text().trim()
                      f[_f.substr(1)]=$GL.data(_f)?1:0
               })
               console.log(f)
@@ -261,7 +262,7 @@ $(function() {
               command_session.add_handler_to_queue(function(msg) {
                      console.log("GL changed: ",msg)
               })
-              command_session.send({action:"SET", bus:1, device_group:"GL", command:cmd})
+              command_session.send({action:"SET", bus:bus, device_group:"GL", command:cmd})
        }
 
        $(".GL .bwd").on("click", function() {
@@ -326,6 +327,7 @@ $(function() {
        ////////////GA
        $(".GA .toggle").on("change", function(e) {
               $GA = $(this).closest(".GA")
+              bus=$GA.data("bus")
               addr=$GA.data("addr")
               port=$GA.find(".toggle").prop('checked')?1:0
               $GA.data("port",port)
@@ -337,7 +339,7 @@ $(function() {
               command_session.add_handler_to_queue(function(msg) {
                      console.log("GA changed: ",msg)
        })
-              command_session.send({action:"SET", bus:1, device_group:"GA", command:cmd})
+              command_session.send({action:"SET", bus:bus, device_group:"GA", command:cmd})
        })
 
        //device events for
