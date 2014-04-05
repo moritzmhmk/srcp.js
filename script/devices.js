@@ -12,10 +12,11 @@ var find_device_group = function(elem) {
 
 $(function() {
        $(".delete_circle").on("click",function(e) {
-              $(".delete").show()
-              $(".delete").css({"right":-$(".delete").width()})
               $device = $(this).closest(".device")
-              $device.css({"left":-$(".delete").width()})
+              $delete=$device.find(".delete")
+              $delete.show()
+              $device.find(".delete").css({"right":-$delete.width()})
+              $device.css({"left":-$delete.width()})
               $device.on("click", function(e) {
                      $device = $(this).closest(".device")
                      $device.css({"left":"0px"})
