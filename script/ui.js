@@ -48,7 +48,7 @@ $(function () {
     }
 
     //slider
-    $('input[type="range"]').on("change",function() {
+    $('input[type="range"]').on("change update",function() {
         var percent = $(this).val()/$(this).prop("max")
         var width=$(this).width()
         var pos = percent*(width-18)+9
@@ -63,5 +63,7 @@ $(function () {
                             color_left+" "+pos+"px, "+color_right+" "+pos+"px)"
         })
     }).change()
-
+    $(window).resize(function() {
+        $('input[type="range"]').trigger("update")
+    })
 })

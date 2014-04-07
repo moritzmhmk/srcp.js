@@ -86,6 +86,7 @@ var updateDevice = function($device) {
 
               $device.find(".speed").val(data.v)
               $device.find(".speed").prop("max",data.v_max)
+              $device.find(".speed").trigger("update")
 
               if(data.drivemode==0) {
                      $device.find(".bwd").addClass("active")
