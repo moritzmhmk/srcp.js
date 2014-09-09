@@ -85,10 +85,10 @@ input[type="checkbox"]:after {
   border: 0px solid #ccc;
   border-radius: 24px;
 
-  transition: left .3s .2s, right .3s .3s;
+  transition: left .35s .2s, right .2s .35s;
 }
 input[type="checkbox"]:checked:after {
   left: 16px;
   right: 1px;
-  transition: left .3s .3s, right .3s .2s;
+  transition: left .2s .35s, right .35s .2s;
 }
