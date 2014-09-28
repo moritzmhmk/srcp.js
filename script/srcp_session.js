@@ -35,7 +35,7 @@ var SRCPSession = function(type) {
 	    console.log(e)
 	})
 
-	this.session.open("ws://192.168.0.21:4304")
+	this.session.open("ws://miraculix.local:4304")
 }
 
 SRCPSession.prototype.add_handler_to_queue = function(handler) {
