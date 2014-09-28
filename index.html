@@ -33,6 +33,20 @@
 
         	INFOSession.prototype.info_handler = function(msg) {
         		switch(msg.device_group) {
+        			case "DESCRIPTION":
+        				if(msg.status_code==100) {
+        					if(buses[msg.bus]===undefined) {
+								buses[msg.bus]={ device_groups:{} }
+					    	}
+					    	bus = buses[msg.bus]
+
+					    	msg.content.some(function(device_group) {
+					    		if(bus.device_groups[device_group]===undefined) {
+							        bus.device_groups[device_group]={ devices:{} }
+							    }
+					    	})
+        				}
+        				break
         			case "GM":
         				$("#generic_messages").append(msg.content[1]+"-->"+msg.content[0]+" ["+msg.content[2]+"]: "+msg.content.slice(3).join(" ")+"\n")
         				break
