@@ -57,15 +57,16 @@ SRCPSession.prototype.send_raw = function(raw_cmd) {
 }
 
 SRCPSession.prototype.handshake_handler = function(msg) {
-	msg.raw.split(";").forEach(function(sub_msg) {
+	msg.raw.split(";").some(function(sub_msg) {
 		sub_msg = sub_msg.trim().split(" ")
 		console.log(sub_msg)
 		if( (sub_msg[0]=="SRCP" || sub_msg[0]=="SRCPOTHER") &&
 			(sub_msg[1]=="0.8.3" || sub_msg[1]=="0.8.4" || sub_msg[1]=="0.8.5") )
 		{
 			this.add_handler_to_queue(this.handshake_handler.bind(this))//this.msg_handler_queue.push(this.handshake_handler)
+	    	this.log_cmd({action:"SET", device_group:"CONNECTIONMODE", command:"SRCP "+this.session_type})
 	    	this.send_raw("SET CONNECTIONMODE SRCP "+this.session_type)
-	    	return;
+	    	return true;
 	    }
 	}.bind(this))
     if(msg.status_code=="202") {
@@ -121,5 +122,9 @@ SRCPSession.prototype.parse_msg = function(raw_msg) {
 }
 
 SRCPSession.prototype.log_msg = function(msg) {
+
+}
+
+SRCPSession.prototype.log_cmd = function(cmd) {
 
 }
