@@ -154,43 +154,41 @@
        		
        		var log_response = function(msg) {
        			var _msg = ""
-       			if(this.session_id<0) {
-       				if(msg.timestamp=="SRCP") {
-	       				_msg += msg.raw
-    				} else {
-    					_msg += "<span class='timestamp'>"+msg.timestamp+"</span> "
-       					_msg += "<span class='status'>" + msg.status_code + " " + msg.status_text + "</span> "
-       					_msg += "<span class='content'>"+msg.content.join(" ")+"</span>"
-    				}
-       			} else {
-       				_msg += "<span class='timestamp'>"+msg.timestamp+"</span> "
-       				_msg += "<span class='status'>" + msg.status_code + " " + msg.status_text + "</span> "
-       				if(msg.bus!==undefined)
-	       				_msg += "<span class='bus'>"+msg.bus + "</span> "
-	       			if(msg.device_group!==undefined)
-	       				_msg += "<span class='device_group'>"+msg.device_group + "</span> "
-       				_msg += "<span class='content'>"+msg.content.join(" ")+"</span>"
-       			}
-
+       			_msg += "<span class='timestamp'>"+msg.timestamp+"</span> "
+       			_msg += "<span class='status'>" + msg.status_code + " " + msg.status_text + "</span> "
+       			if(msg.bus!==undefined)
+	       			_msg += "<span class='bus'>"+msg.bus + "</span> "
+	       		if(msg.device_group!==undefined)
+	       			_msg += "<span class='device_group'>"+msg.device_group + "</span> "
+       			_msg += "<span class='content'>"+msg.content.join(" ")+"</span>"
   				_msg += "<br>"
        			$("#log").append(_msg)
        			$("#log_container").scrollTop($('#log').height())
        		}
 
        		var log_command = function(cmd) {
-       			var _msg  = "<span class='action'>" + cmd.action + "</span> "
-       				_msg += "<span class='bus'>"+cmd.bus + "</span> "
-       				_msg += "<span class='device_group'>"+cmd.device_group + "</span> "
-       				_msg += "<span class='content'>"+cmd.command+"</span>"
-       				_msg += "<br>"
-       			$("#log").append(_msg)
-       			$("#log").scrollTop($('#log').height())
+       			var _cmd = ""
+       			_cmd += "<span class='action'>" + cmd.action + "</span> "
+       			if(cmd.bus!==undefined)
+       				_cmd += "<span class='bus'>"+cmd.bus + "</span> "
+       			if(cmd.device_group!==undefined)
+       				_cmd += "<span class='device_group'>"+cmd.device_group + "</span> "
+       			_cmd += "<span class='content'>"+cmd.command+"</span>"
+       			_cmd += "<br>"
+       			$("#log").append(_cmd)
+       			$("#log_container").scrollTop($('#log').height())
        		}
 
        		INFOSession.prototype.log_msg = log_response
+       		INFOSession.prototype.log_cmd = log_command
+
+       		COMMANDSession = function() {}
+        	COMMANDSession.prototype = new SRCPSession("COMMAND")
+        	COMMANDSession.prototype.log_msg = log_response
+       		COMMANDSession.prototype.log_cmd = log_command
 
        		info_session = new INFOSession()
-       		command_session = new SRCPSession("COMMAND")
+       		command_session = new COMMANDSession()
 
 
        		
