@@ -22,20 +22,37 @@ var SRCPSession = function(type) {
 			msg += String.fromCharCode(chr)
 		}
 	})
-	this.session.on('open', function() {
+	this.session.on('open', function(e) {
+		self.open_event(e)
 	    console.log("OPEN EVENT for session "+self.session_id+" ("+self.session_type+")")
 	    self.add_handler_to_queue(self.handshake_handler.bind(self))
 	})
 	this.session.on('close', function(e) {
+		self.close_event(e)
 		console.log("CLOSE EVENT for session "+self.session_id+" ("+self.session_type+")")
 	    console.log(e)
 	})
 	this.session.on('error', function(e) {
+		self.error_event(e)
 		console.log("ERROR EVENT for session "+self.session_id+" ("+self.session_type+")")
 	    console.log(e)
 	})
+}
 
-	this.session.open("ws://localhost:4304")
+SRCPSession.prototype.open = function(host, port) {
+	this.session.open("ws://"+host+":"+port)
+}
+
+SRCPSession.prototype.open_event = function(e) {
+
+}
+
+SRCPSession.prototype.close_event = function(e) {
+
+}
+
+SRCPSession.prototype.error_event = function(e) {
+
 }
 
 SRCPSession.prototype.add_handler_to_queue = function(handler) {
@@ -47,8 +64,8 @@ SRCPSession.prototype.add_handshake_successful_handler_to_queue = function(handl
 }
 
 SRCPSession.prototype.send = function(cmd) {
+	this.log_cmd(cmd)
 	raw_cmd = cmd.action + " " + cmd.bus + " " + cmd.device_group + " " + cmd.command
-
 	this.send_raw(raw_cmd)
 }
 

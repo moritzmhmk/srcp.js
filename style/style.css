@@ -524,3 +524,71 @@ input {
 .cli_input:-moz-placeholder { color:#aaa; }
 .cli_input:-ms-input-placeholder { color:#aaa; } 
 
+
+#server_settings {
+	position: absolute;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+	background:rgba(0,0,0,0.5);
+	z-index: 101;
+}
+
+#server_settings .outer {
+	display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+#server_settings .middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#server_settings .inner {
+    margin-left: auto;
+    margin-right: auto; 
+    width: 300px;
+    background-color:rgba(255,255,255,0.7);
+    border-radius:10px;
+    overflow: hidden;
+    text-align: center;
+}
+
+#server_settings .title {
+	font-size: 20px;
+	font-weight: 500;
+	margin-top: 10px;
+}
+
+#server_settings #server_close_msg {
+	padding:10px;
+}
+
+#server_settings input[type="text"] {
+	border:1px solid #aaa;
+	border-radius: 5px;
+	height:25px;
+	text-align: center;
+	font-size: 15px;
+}
+
+#server_settings input[type="button"] {
+	margin-top: 10px;
+	display:block;
+	width:100%;
+	height:44px;
+	font-size: 16px;
+	line-height: 44px;
+	color:#007AFF;
+	border-top: 1px #aaa solid;
+	outline:none;
+	background-color: transparent;
+	text-indent: 10px;
+}
+
+#server_settings input[type="button"]:active {
+	background-color:rgba(255,255,255,0.7);
+}
