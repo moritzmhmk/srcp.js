@@ -35,7 +35,7 @@ var SRCPSession = function(type) {
 	    console.log(e)
 	})
 
-	this.session.open("ws://miraculix.local:4304")
+	this.session.open("ws://localhost:4304")
 }
 
 SRCPSession.prototype.add_handler_to_queue = function(handler) {
@@ -74,7 +74,7 @@ SRCPSession.prototype.handshake_handler = function(msg) {
     	this.send_raw("GO")
     }
     if(msg.status_code=="200") {
-    	this.session_id = msg.content[0]
+    	this.session_id = msg.content[1]//documentation is ambiguous - either "200 OK <ID>" or "200 OK GO <ID>"
     	console.log("Got Session ID: "+this.session_id,this)
     	
     	
