@@ -9,7 +9,7 @@ The web interface is designed to work on a desktop computer as well as on a mobi
 It can even be added to the home screen on iOS (this will give it its own icon and make it use the entire screen without address bar etc.).
 
 #Demo
-[demo](https://rawgithub.com/moritzmhmk/srcp.js/master/index.html)
+[demo](https://cdn.rawgit.com/moritzmhmk/srcp.js/master/index.html)
 
 #Usage
 ##Prerequisites
