@@ -19,7 +19,6 @@
     <style type="text/css">
       #icon {
         width: 170px;
-        margin-right: 25px;
       }
 
       .jumbotron {
@@ -52,6 +51,11 @@
 
       /* Small devices (tablets, 768px and up) */
       @media (min-width: 768px) { 
+        #icon {
+          margin-right: 25px;
+          float:left;
+        }
+
         .carousel-indicators {
           left:42%;
         }
@@ -72,6 +76,11 @@
       }
 
       @media (max-width: 767px) { 
+        #icon {
+          width: 100px;
+          margin-bottom:-25px;
+        }
+
         .container {
           text-align: center;
         }
@@ -97,7 +106,7 @@
     <div class="jumbotron">
       <br><br>
       <div class="container">
-        <img id="icon" src="img/icon.png" class="pull-left">
+        <img id="icon" src="img/icon.png">
         <h1>
           srcp.js<br>
           <small>srcp webclient</small>
