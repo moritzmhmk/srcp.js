@@ -166,7 +166,7 @@ var addGL = function(data) {
 
        created = createDevice(data)
        if(created.new)
-              created.device.insertBefore( $( "#GL_container .addDevice" ) )
+              created.device.appendTo( $( "#GL_container .devices" ) )
 }
 
 //adding new GA
@@ -175,7 +175,7 @@ var addGA = function(data) {
 
        created = createDevice(data)
        if(created.new)
-              created.device.insertBefore( $( "#GA_container .addDevice" ) )
+              created.device.appendTo( $( "#GA_container .devices" ) )
 }
 
 //adding new POWER
@@ -184,7 +184,7 @@ var addPOWER = function(data) {
 
        created = createDevice(data)
        if(created.new)
-              created.device.insertBefore( $( "#POWER_container .addDevice" ) )
+              created.device.appendTo( $( "#POWER_container .devices" ) )
 }
 
 

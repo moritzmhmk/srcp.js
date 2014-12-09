@@ -105,6 +105,10 @@ input {
 	-moz-box-sizing:border-box;
 }
 
+.container .devices {
+	min-height: 5px;
+}
+
 .container .addDevice {
 	width:100%;
 	display:none;
