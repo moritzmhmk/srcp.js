@@ -158,11 +158,15 @@ COMMANDSession.prototype.log_cmd = log_command
 
 var open_event = function() {
   $("#server_settings").hide()
+  $("#server_close_msg").text("")
 }
 
 var close_event = function(e) {
   $("#server_settings").show()
-  $("#server_close_msg").text(e)
+  if(e.type=="close")
+    $("#server_close_msg").text("Connection closed!")
+  else
+    $("#server_close_msg").text("Error: "+e.type)
 }
 
 INFOSession.prototype.open_event = open_event
@@ -179,6 +183,6 @@ var open_sessions = function() {
 }
 
 $(function() {
-  open_sessions()//try with standard values
+  //open_sessions()//try with standard values
   $("#open_sessions").on("click", open_sessions)
 })
