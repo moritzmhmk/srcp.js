@@ -226,39 +226,37 @@ $(function() {
               $("#"+$("#device_type").val()+"_dialog").show()
        })
 
-       $addGL = $("#GL_dialog button")
-       $addGL.on("click", function() {
-              var addr = $("#GL_addr").val()
-              var prot = $("#GL_prot").val()
-              addGL({
-                     addr:addr,
-                     prot:prot,
-                     name:"Name",
-                     type:"steam",
-                     v:0,
-                     v_max:100
-              })
-              $("#add_device_container").hide()
-       })
-       $addGA = $("#GA_dialog button")
-       $addGA.on("click", function() {
-              var addr = $("#GA_addr").val()
-              var prot = $("#GA_prot").val()
-              addGA({
-                     addr:addr,
-                     prot:prot,
-                     name:"Name",
-                     type:"turnout_right"
-              })
-              $("#add_device_container").hide()
-       })
-       $addPOWER = $("#POWER_dialog button")
-       $addPOWER.on("click", function() {
-              var bus = $("#POWER_bus").val()
-              addPOWER({
-                     bus:bus,
-                     name:"Name"
-              })
+       $("#add_device_add").on("click", function() {
+              var device_type = $("#device_type").val()
+              if(device_type=="GL") {
+                     var addr = $("#GL_addr").val()
+                     var prot = $("#GL_prot").val()
+                     addGL({
+                            addr:addr,
+                            prot:prot,
+                            name:"Name",
+                            type:"steam",
+                            v:0,
+                            v_max:100
+                     })
+              }
+              if(device_type=="GA") {
+                    var addr = $("#GA_addr").val()
+                     var prot = $("#GA_prot").val()
+                     addGA({
+                            addr:addr,
+                            prot:prot,
+                            name:"Name",
+                            type:"turnout_right"
+                     })
+              }
+              if(device_type=="POWER") {
+                    var bus = $("#POWER_bus").val()
+                     addPOWER({
+                            bus:bus,
+                            name:"Name"
+                     })
+              }
               $("#add_device_container").hide()
        })
        $("#add_device_cancel").on("click", function() {

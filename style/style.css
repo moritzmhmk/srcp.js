@@ -639,10 +639,11 @@ input {
 	background:none;
 }
 
-
-#add_device_container .cancel {
-	color:red;
+button#add_device_add, button#add_device_cancel {
 	text-align: center;
+}
+button#add_device_cancel {
+	color:red;
 	border-bottom: 1px #cbcbcb solid;
 }
 
