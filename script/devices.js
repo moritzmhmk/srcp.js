@@ -54,6 +54,7 @@ editMode=function() {
               $edit.text("Done")
        } else {
               $("#add").hide()
+              $("#add_device_container").hide()
 
               $(".device").css({"left":"0px"})
               $(".device").css("padding-left","5px")
