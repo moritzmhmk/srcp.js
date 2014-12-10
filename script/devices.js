@@ -33,7 +33,7 @@ $(function() {
 editMode=function() {
        $edit = $("#edit")
        if($edit.text()=="Edit") {
-              $(".addDevice").show()
+              $("#add").show()
               
               $(".device").css("padding-left","40px")
               $(".delete_circle").show()
@@ -53,7 +53,7 @@ editMode=function() {
               })
               $edit.text("Done")
        } else {
-              $(".addDevice").hide()
+              $("#add").hide()
 
               $(".device").css({"left":"0px"})
               $(".device").css("padding-left","5px")
@@ -187,7 +187,9 @@ var addPOWER = function(data) {
               created.device.appendTo( $( "#POWER_container .devices" ) )
 }
 
-
+var addDeviceDialog = function() {
+       $("#add_device_container").show()
+}
 
 $(function() {
        //showing container via navbar (on small screens - e.g. mobile phones)
@@ -212,34 +214,57 @@ $(function() {
 
        $("#navbar span").on("click", showContainer)
 
-       //add device button events
-       $addGL = $("#GL_container .addDevice .add")
+       //add device dialog events
+       $("#GL_dialog").show()
+       $("#GA_dialog").hide()
+       $("#POWER_dialog").hide()
+       $("#device_type").on("change", function() {
+              $("#GL_dialog").hide()
+              $("#GA_dialog").hide()
+              $("#POWER_dialog").hide()
+              $("#"+$("#device_type").val()+"_dialog").show()
+       })
+
+       $addGL = $("#GL_dialog button")
        $addGL.on("click", function() {
+              var addr = $("#GL_addr").val()
+              var prot = $("#GL_prot").val()
               addGL({
-                     addr:"addr",
-                     prot:"prot",
+                     addr:addr,
+                     prot:prot,
                      name:"Name",
                      type:"steam",
                      v:0,
                      v_max:100
               })
+              $("#add_device_container").hide()
        })
-       $addGA = $("#GA_container .addDevice .add")
+       $addGA = $("#GA_dialog button")
        $addGA.on("click", function() {
+              var addr = $("#GA_addr").val()
+              var prot = $("#GA_prot").val()
               addGA({
-                     addr:"addr",
-                     prot:"prot",
+                     addr:addr,
+                     prot:prot,
                      name:"Name",
                      type:"turnout_right"
               })
+              $("#add_device_container").hide()
        })
-       $addPOWER = $("#POWER_container .addDevice .add")
+       $addPOWER = $("#POWER_dialog button")
        $addPOWER.on("click", function() {
+              var bus = $("#POWER_bus").val()
               addPOWER({
-                     bus:"bus",
+                     bus:bus,
                      name:"Name"
               })
+              $("#add_device_container").hide()
        })
+       $("#add_device_cancel").on("click", function() {
+              $("#add_device_container").hide()
+       })
+
+
 
        //device events for
        ////////////GL

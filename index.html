@@ -28,34 +28,41 @@
     <script type="text/javascript" src="script/devices.js"></script>
 
     <script type="text/javascript" src="script/index.js"></script>
+
+    <script type="text/javascript">
+      //must be done after all input-fields have been generated (tags-input...)
+      $(function() {
+        $('input').on('focus',function(e) { 
+          this.style.webkitTransform = 'translate3d(-10000px,0,0)'//disables horizontal ios scrolling by moving the input temporary
+          webkitRequestAnimationFrame(function() { this.style.webkitTransform = '' }.bind(this))
+        })
+      })
+    </script>
   </head>
   <body>
     <div id="header">
+      <a href="javascript:addDeviceDialog()" id="add">Add</a>
       SRCP.js
       <a href="javascript:editMode()" id="edit">Edit</a>
     </div>
     <div id="pageOuter"><div id="pageMiddle"><div id="pageInner">
       <div id="GL_container" class="container scrollable">
         <div class="devices"></div>
-        <div class="addDevice"><span class="add">+</span></div>
       </div>
       <div id="GA_container" class="container scrollable">
         <div class="devices"></div>
-        <div class="addDevice"><span class="add">+</span></div>
       </div>
       <div id="POWER_container" class="container scrollable">
         <div class="devices"></div>
-        <div class="addDevice"><span class="add">+</span></div>
       </div>
       <div id="log_container" class="container scrollable">
-        <div id="log">
-      </div>
-      <form id="cli_container" onSubmit="alert('a')">
-        &gt;
-        <input type="text" class="cli_input autoresize_input" id="command_input"    placeholder="cmd">
-        <input type="text" class="cli_input autoresize_input" id="bus_input"      placeholder="bus">
-        <input type="text" class="cli_input autoresize_input" id="device_group_input" placeholder="device">
-        <input type="text" class="cli_input autoresize_input" id="content_input"    placeholder="content">
+        <div id="log"></div>
+        <form id="cli_container">
+          &gt;
+          <input type="text" class="cli_input autoresize_input" id="command_input"    placeholder="cmd">
+          <input type="text" class="cli_input autoresize_input" id="bus_input"      placeholder="bus">
+          <input type="text" class="cli_input autoresize_input" id="device_group_input" placeholder="device">
+          <input type="text" class="cli_input autoresize_input" id="content_input"    placeholder="content">
         </form>
       </div>
 
@@ -114,12 +121,58 @@
       </div>
       <pre id="generic_messages"></pre>
     </div></div></div>
-    
+
     <div id="navbar">
       <span data-name="GL"><img src="images/GL_active.png" height="28px"><br>Locomotives</span>
       <span data-name="GA"><img src="images/GA.png" height="25px"><br>Accessories</span>
       <span data-name="POWER"><img src="images/POWER.png" height="25px"><br>Power</span>
       <span data-name="log"><img src="images/log.png" height="23px"><br>Log</span>
+    </div>
+
+    <div id="add_device_container" class="box">
+      <div class="arrow"> </div>
+      <div class="dialog">
+        <br>
+        <p>
+          <select id="device_type">
+            <option value="GL">Locomotive</option>
+            <option value="GA">Accessory</option>
+            <option value="POWER">Power switch</option>
+          </select>
+        </p>
+        <div class="br"></div>
+        <div id="GL_dialog">
+          <p>
+            <label for="GL_prot">Protocol</label>
+            <input id="GL_prot" type="text" name="prot" value="M">
+          </p>
+          <p>
+            <label for="GL_addr">Address</label>
+            <input id="GL_addr" type="text" name="addr" value="1">
+          </p>
+          <button>Add locomotive</button>
+        </div>
+        <div id="GA_dialog">
+          <p>
+            <label for="GA_prot">Protocol</label>
+            <input id="GA_prot" type="text" name="prot" value="M">
+          </p>
+          <p>
+            <label for="GA_addr">Address</label>
+            <input id="GA_addr" type="text" name="addr" value="1">
+          </p>
+          <button>Add accessory</button>
+        </div>
+        <div id="POWER_dialog">
+          <p>
+            <label for="POWER_bus">Bus</label>
+            <input id="POWER_bus" type="text" name="bus" value="1">
+          </p>
+          <button>Add power switch</button>
+        </div>
+        <div class="br"></div>
+        <button id="add_device_cancel" class="cancel">Cancel</button>
+      </div>
     </div>
 
     <div id="server_settings">

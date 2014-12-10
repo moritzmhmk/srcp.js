@@ -69,9 +69,8 @@ input {
 	padding-top: 20px;
 }
 
-#header #edit {
+#header #edit, #header #add {
 	position: absolute;
-	right:10px;
 	bottom:0px;
 	font-size: 22px;
 	line-height: 44px;
@@ -79,6 +78,15 @@ input {
 	color:#06f;
 	font-weight: 200;
 	text-decoration: none;
+}
+
+#header #edit {
+	right:10px;
+}
+
+#header #add {
+	left:10px;
+	display: none;
 }
 
 .container:before {
@@ -155,7 +163,7 @@ input {
 	text-align: justify;
 	text-align-last: justify;
 
-	z-index:100;
+	z-index:90;
 }
 
 #navbar span {
@@ -528,6 +536,145 @@ input {
 .cli_input:-moz-placeholder { color:#aaa; }
 .cli_input:-ms-input-placeholder { color:#aaa; } 
 
+
+#add_device_container {
+	display: none;
+	position: absolute;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+	background:rgba(0,0,0,0.5);
+	z-index: 100;
+}
+
+#add_device_container .arrow {
+	top: 25px;
+	left: 32px;
+	border: solid transparent;
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 255, 255, 0);
+	border-bottom-color: rgba(255, 255, 255, 1);
+	border-width: 10px;
+	margin-left: -10px;
+}
+
+#add_device_container .dialog {
+	position: absolute;
+	top:45px;
+	left:10px;
+	max-height:350px;
+	width:300px;
+    background-color:#fff;
+    border-radius:10px;
+	overflow: scroll;
+}
+
+#add_device_container input, #add_device_container button, #add_device_container select {
+	outline: none;
+	
+	border:0;
+	background: none;
+	width:100%;
+	height:44px;
+	
+	
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 44px;
+	text-align: left;
+	color:#000;
+}
+
+#add_device_container p {
+	position: relative;
+
+	padding-left: 10px;
+	padding-right: 10px;
+	
+	border-top: 1px #cbcbcb solid;
+
+	background-color: #fff;
+
+	min-height: 44px;
+}
+
+#add_device_container p br {
+	display: none;
+}
+#add_device_container label  {
+	position:absolute;
+	top:0;
+	left:0;
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: 200;
+	line-height: 44px;
+	padding-left:10px;
+	color:#454545;
+}
+
+#add_device_container input[type="text"] {
+	text-align: right;
+}
+
+#add_device_container input[type="button"], #add_device_container button, #add_device_container .br {
+	color:#007AFF;
+
+	border-top: 1px #cbcbcb solid;
+
+	background-color: #fff;
+
+	text-indent: 10px;
+
+	border-radius: 0;
+}
+
+#add_device_container .br {
+	height:44px;
+}
+
+
+#add_device_container .cancel {
+	color:red;
+	text-align: center;
+}
+
+#add_device_container input[type="button"]:active, #add_device_container button:active {
+	background-color:#cbcbcb;
+}
+
+#add_device_container input:focus {
+	color:#007AFF;
+}
+
+@media (max-width: 700px) {
+	#add_device_container {
+		z-index:91;
+	}
+
+	#add_device_container .dialog{
+		width:100%;
+		height:100%;
+		left:0px;
+		top:0px;
+		border-radius: 0px;
+		background-color: #fff;
+	}
+	#add_device_container > ::before {
+		display:block;
+		height:44px;
+		content:" ";
+	}
+
+	#add_device_container .arrow {
+		display: none;
+	}
+}
 
 #server_settings {
 	position: absolute;
