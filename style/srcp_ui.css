@@ -1,0 +1,222 @@
+.list .group .item.device {
+	height: auto;
+}
+
+.list .group .item.device .info {
+	position: relative;
+	width:100%;
+	height:40px;
+	line-height: 20px;
+}
+
+.list .group .item.device .info .icon {
+	position:absolute;
+	bottom:10px;
+	left:0px;
+	width:40px;
+	height:20px;
+	z-index:2;
+}
+
+.list .group .item.device .info .prot,
+.list .group .item.device .info .addr,
+.list .group .item.device .info .bus  {
+	position:absolute;
+	bottom:10px;
+	left:42px;
+	font-size: 9px;
+	line-height: 10px;
+	width:18px;
+	z-index:2;
+}
+.list .group .item.device .info .prot,
+.list .group .item.device .info .bus  {
+	top:10px;
+}
+
+.list .group .item.device .info .name {
+	position: absolute;
+	top:9px;
+	left:60px;
+	right: 46px;
+	height:28px;
+	
+	font-size: 16px;
+	font-weight: 400;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space: nowrap;
+	z-index:3;
+}
+
+.list .group .item.device .info .name[contenteditable=true] {
+	text-overflow:inherit;
+	overflow:visible;
+}
+
+.list .group .item.device .stop-button {
+	border:1px solid #ccc;
+	color:#ccc;
+	z-index:3;
+}
+
+.list .group .item.device .stop-button:hover,
+.list .group .item.device .stop-button.active {
+	color:#e00;
+	border-color:#e00;
+}
+
+.list .group .item.device .stop-button:active {
+	background:#e00;
+	color:#fff;
+	border-color:#e00;
+}
+
+.list .group .item.device .movement {
+	position: relative;
+	padding-left:30px;
+	padding-right:30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.list .group .item.device .movement .bwd,
+.list .group .item.device .movement .fwd {
+	position: absolute;
+	top:0px;
+	width:19px;
+	height:19px;
+	color:#ccc;
+	opacity: 0.5;
+	transition:opacity .5s;
+}
+.list .group .item.device .movement .bwd {
+	left:3px;
+}
+.list .group .item.device .movement .fwd {
+	right:3px;
+}
+.list .group .item.device .movement .active {
+	opacity: 1.0;
+}
+
+.list .group .item.device .movement .speed {
+	width:100%;
+}
+
+.list .group .item.device input[type=range] {
+	-webkit-appearance: none;
+    position:relative;
+    right: auto;
+    outline: none;
+    width: 200px;
+    height:18px;
+    border: 0;
+    background: transparent;
+    overflow: hidden;
+    background-image: linear-gradient(to top, #FFF 7px, #F00 7px, #F00 11px, #FFF 11px);
+}
+
+.list .group .item.device input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	content:" ";
+    position:relative;
+    background-color:#fff;
+    border:1px solid #ccc;
+    border-radius:50%;
+    width:18px;
+    height:18px;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+.list .group .item.device input[type="range"]::-webkit-slider-thumb:after {
+	content: " ";
+	display: block;
+	position: absolute;
+	left:17px;
+	top:6px;
+	height:4px;
+	width:1000px;
+	background: #ccc;
+}
+
+.list .group .item.device .functions {
+	text-align: center;
+	max-width:100%;
+}
+.list .group .item.device .functions .function {
+	font-size: 17px;
+	line-height: 21px;
+	color:#ccc;
+}
+
+
+#log_container {
+	background: #333330;
+}
+
+@media (min-width: 701px) {
+	#log_container:before {
+		display: none;
+	}
+}
+
+#log {
+	position: relative;
+	width:100%;
+
+	font-family: monospace;
+	font-size: 15px;
+	line-height: 15px;
+}
+
+#log span {
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+#log .timestamp {
+	color:#ccc;
+	font-size: 10px;
+}
+#log .status { color:#f0f; }
+#log .action { color:#f00; }
+#log .bus { color:#0f0; }
+#log .device_group { color:#ff0; }
+#log .content { color:#fff; }
+
+#cli_container {
+	position: relative;
+	width:100%;
+	border-top:1px solid #222;
+	margin-top: 2px;
+	padding-top: 2px;
+	color:#fff;
+}
+
+.cli_input {
+	height:17px;
+	text-align: center;
+	border:0;
+	border-radius: 9px;
+	background-color: #444;
+	outline:none;
+
+	font-family: monospace;
+	font-size: 15px;
+	line-height: 15px;
+	color:#fff;
+}
+.cli_input:focus {
+	color:#fff;
+}
+.cli_input:focus {
+	background-color: #555;
+}
+
+.cli_input::-webkit-input-placeholder { color:#aaa; }
+.cli_input::-moz-placeholder { color:#aaa; }
+.cli_input:-moz-placeholder { color:#aaa; }
+.cli_input:-ms-input-placeholder { color:#aaa; } 

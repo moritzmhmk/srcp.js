@@ -9,7 +9,7 @@ var SRCPSession = function(type) {
 	this.handshake_successful_handler_queue = []
 
 	this.session.on('message', function() {
-		console.log("MESSAGE EVENT for session "+self.session_id+" ("+self.session_type+")")
+		console.info("MESSAGE EVENT for session "+self.session_id+" ("+self.session_type+")")
 		var msg=""
 		while(self.session.rQlen()) {
 			var chr = self.session.rQshift8()
@@ -24,18 +24,16 @@ var SRCPSession = function(type) {
 	})
 	this.session.on('open', function(e) {
 		self.open_event(e)
-	    console.log("OPEN EVENT for session "+self.session_id+" ("+self.session_type+")")
+	    console.info("OPEN EVENT for session "+self.session_id+" ("+self.session_type+")")
 	    self.add_handler_to_queue(self.handshake_handler.bind(self))
 	})
 	this.session.on('close', function(e) {
 		self.close_event(e)
-		console.log("CLOSE EVENT for session "+self.session_id+" ("+self.session_type+")")
-	    console.log(e)
+		console.info("CLOSE EVENT for session "+self.session_id+" ("+self.session_type+")")
 	})
 	this.session.on('error', function(e) {
 		self.error_event(e)
-		console.log("ERROR EVENT for session "+self.session_id+" ("+self.session_type+")")
-	    console.log(e)
+		console.error("ERROR EVENT for session "+self.session_id+" ("+self.session_type+")")
 	})
 }
 
@@ -76,7 +74,6 @@ SRCPSession.prototype.send_raw = function(raw_cmd) {
 SRCPSession.prototype.handshake_handler = function(msg) {
 	msg.raw.split(";").some(function(sub_msg) {
 		sub_msg = sub_msg.trim().split(" ")
-		console.log(sub_msg)
 		if( (sub_msg[0]=="SRCP" || sub_msg[0]=="SRCPOTHER") &&
 			(sub_msg[1]=="0.8.3" || sub_msg[1]=="0.8.4" || sub_msg[1]=="0.8.5") )
 		{
@@ -92,19 +89,18 @@ SRCPSession.prototype.handshake_handler = function(msg) {
     }
     if(msg.status_code=="200") {
     	this.session_id = msg.content[1]//documentation is ambiguous - either "200 OK <ID>" or "200 OK GO <ID>"
-    	console.log("Got Session ID: "+this.session_id,this)
+    	console.info("Got Session ID: "+this.session_id,this)
     	
     	
 		while(this.handshake_successful_handler_queue.length > 0) {
 			handler = this.handshake_successful_handler_queue.shift()
-			console.log(handler)
 			handler(this.session_id)
 		}
     }
 }
 
 SRCPSession.prototype.info_handler = function(msg) {
-	console.log("session "+this.session_id+"("+this.session_type+") received INFO message:",msg.content)
+	console.info("session "+this.session_id+"("+this.session_type+") received INFO message:",msg.content)
 }
 
 SRCPSession.prototype.parse_msg = function(raw_msg) {
@@ -119,7 +115,7 @@ SRCPSession.prototype.parse_msg = function(raw_msg) {
 		content:msg_arr.slice(3)
 	}
 
-	console.log("parsed msg for session "+this.session_id+"("+this.session_type+")",msg)
+	console.info("parsed msg for session "+this.session_id+"("+this.session_type+")",msg)
 
 	if(msg.status_text=="INFO") {
 		msg.bus = msg_arr[3]
@@ -131,9 +127,6 @@ SRCPSession.prototype.parse_msg = function(raw_msg) {
 	this.log_msg(msg)
 
 	msg_handler = this.msg_handler_queue.shift()
-	//console.log(msg_handler)
-	//if(msg_handler !== undefined)
-	//	msg_handler.call(this,msg)
 	if(msg_handler !== undefined)
 		msg_handler(msg)
 }

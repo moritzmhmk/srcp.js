@@ -10,75 +10,13 @@ var find_device_group = function(elem) {
        return device_group
 }
 
-$(function() {
-       $(".delete_circle").on("click",function(e) {
-              $device = $(this).closest(".device")
-              $delete=$device.find(".delete")
-              $delete.show()
-              $device.find(".delete").css({"right":-$delete.width()})
-              $device.css({"left":-$delete.width()})
-              $device.on("click", function(e) {
-                     $device = $(this).closest(".device")
-                     $device.css({"left":"0px"})
-                     $device.off("click")
-              })
-              return false
-       })
-       $(".delete").on("click",function(e) {
-              $device = $(this).closest(".device")
-              $device.slideUp('fast', function(){ $(this).remove() })
-       })
-})
-//switching between normal and edit mode
-editMode=function() {
-       $edit = $("#edit")
-       if($edit.text()=="Edit") {
-              $("#add").show()
-              
-              $(".device").css("padding-left","40px")
-              $(".delete_circle").show()
-              
-
-              $(".device").css("padding-right","40px")
-              $(".drag").show()
-
-              $(".edit").prop('contenteditable',true)
-
-              //$("input.edit").removeAttr("readonly")
-              $(".device .icon").on("click", function(e) {
-                     $this = $(this)
-                     type = prompt("device type")
-                     device_group = find_device_group($this)
-                     $this.prop("src","images/device_icons/"+device_group+"_"+type+".png")
-              })
-              $edit.text("Done")
-       } else {
-              $("#add").hide()
-              $("#add_device_container").hide()
-
-              $(".device").css({"left":"0px"})
-              $(".device").css("padding-left","5px")
-              $(".delete_circle").hide()
-              $(".delete").hide()
-              
-
-              $(".device").css("padding-right","5px")
-              $(".drag").hide()
-              
-              $(".edit").removeAttr('contenteditable').blur()
-
-              $(".device .icon").off("click")
-              $edit.text("Edit")
-       }
-}
-
 //bus -> [ID] -> device_groups -> [DG] -> devices -> [ADDR] => $device
 var buses = {}
 
 var updateDevice = function($device) {
        data = $device.data()
 
-       $device.find(".icon").attr("src","images/device_icons/"+data.device_group+"_"+data.type+".png")
+       $device.find(".icon").attr("src","device_icons/"+data.device_group+"_"+data.type+".png")
        $device.find(".name").text(data.name)
 
        if(data.device_group=="GL") {
@@ -154,7 +92,7 @@ var createDevice = function(data) {
               devices[data.addr]=$device
        
        } else {
-              console.log("[WARNING] device of type "+data.device_group+" with address "+data.addr+" already exists on bus "+data.bus)
+              console.warn("device of type "+data.device_group+" with address "+data.addr+" already exists on bus "+data.bus)
               //TODO find better way?
               return {device:devices[data.addr], new:false}
        }
@@ -167,7 +105,7 @@ var addGL = function(data) {
 
        created = createDevice(data)
        if(created.new)
-              created.device.appendTo( $( "#GL_container .devices" ) )
+              created.device.appendTo( $( "#GL_container .group" ) )
 }
 
 //adding new GA
@@ -176,7 +114,7 @@ var addGA = function(data) {
 
        created = createDevice(data)
        if(created.new)
-              created.device.appendTo( $( "#GA_container .devices" ) )
+              created.device.appendTo( $( "#GA_container .group" ) )
 }
 
 //adding new POWER
@@ -185,85 +123,96 @@ var addPOWER = function(data) {
 
        created = createDevice(data)
        if(created.new)
-              created.device.appendTo( $( "#POWER_container .devices" ) )
+              created.device.appendTo( $( "#POWER_container .group" ) )
 }
 
-var addDeviceDialog = function() {
-       $("#add_device_container").show()
+var TERM = function(data) {
+    if(data["device_group"] == "GL")
+        cmd = data["addr"];
+    else if(data["device_group"] == "GA")
+        cmd = data["addr"];
+    else if(data["device_group"] == "POWER")
+        cmd = data["addr"];
+    else
+        return;
+
+    if(command_session.session_id==-1)
+        return;
+
+    command_session.add_handler_to_queue(function(msg) {})
+    command_session.send({action:"TERM", bus:data["bus"], device_group:data["device_group"], command:cmd})
+
+    bus = buses[data.bus];
+    devices = bus.device_groups[data.device_group].devices;
+    devices[data.addr] = undefined;
 }
 
 $(function() {
-       //showing container via navbar (on small screens - e.g. mobile phones)
-       var showContainer=function() {
-              $this = $(this).closest("span")
-              name = $this.data("name")
-              
+    $(".device").on("item-deleted", function() {
+        console.debug("delete event: ",this);
+        TERM($(this).data());
+    });
 
-              $this.parent().children("span").each(function() {
-                     $_this = $(this)
-                     _name = $_this.data("name")
-                     $_img = $_this.children("img")
-                     $_img.attr("src","images/"+_name+".png")
-              })
+    $("#add_GL_button").click(function() {
+        var bus = $("#add_GL_bus").val();
+        var addr = $("#add_GL_addr").val();
+        var prot = $("#add_GL_prot").val();
+        var cmd = [addr, prot].join(" ");
 
-              $img = $this.children("img")
-              $img.attr("src","images/"+name+"_active.png")
+        if(command_session.session_id==-1) {
+            $("#add_device_msg").text("Error while adding Locomotive: No connection to server.");
+            return;
+        }
 
-              $(".container").hide()
-              $("#"+name+"_container").show()
-       }
+        command_session.add_handler_to_queue(function(msg) {
+            $("#add_GL_button").removeClass("waiting");
+            if(msg.status_code == "200")
+                $("#add_device_msg").text("Successfully added Locomotive.");
+            else
+                $("#add_device_msg").text("Error while adding Locomotive: "+msg.raw);
+        })
+        $("#add_GL_button").addClass("waiting");
+        command_session.send({action:"INIT", bus:bus, device_group:"GL", command:cmd})
+    })
+    $("#add_GA_button").click(function() {
+        var bus = $("#add_GA_bus").val();
+        var addr = $("#add_GA_addr").val();
+        var prot = $("#add_GA_prot").val();
+        var cmd = [addr, prot].join(" ");
 
-       $("#navbar span").on("click", showContainer)
+        if(command_session.session_id==-1) {
+            $("#add_device_msg").text("Error while adding Accessory: No connection to server.");
+            return;
+        }
 
-       //add device dialog events
-       $("#GL_dialog").show()
-       $("#GA_dialog").hide()
-       $("#POWER_dialog").hide()
-       $("#device_type").on("change", function() {
-              $("#GL_dialog").hide()
-              $("#GA_dialog").hide()
-              $("#POWER_dialog").hide()
-              $("#"+$("#device_type").val()+"_dialog").show()
-       })
+        command_session.add_handler_to_queue(function(msg) {
+            $("#add_GA_button").removeClass("waiting");
+            if(msg.status_code == "200")
+                $("#add_device_msg").text("Successfully added Accessory.");
+            else
+                $("#add_device_msg").text("Error while adding Accessory: "+msg.raw);
+        })
+        $("#add_GA_button").addClass("waiting");
+        command_session.send({action:"INIT", bus:bus, device_group:"GA", command:cmd})
+    })
+    $("#add_POWER_button").click(function() {
+        var bus = $("#add_POWER_bus").val();
 
-       $("#add_device_add").on("click", function() {
-              var device_type = $("#device_type").val()
-              if(device_type=="GL") {
-                     var addr = $("#GL_addr").val()
-                     var prot = $("#GL_prot").val()
-                     addGL({
-                            addr:addr,
-                            prot:prot,
-                            name:"Name",
-                            type:"steam",
-                            v:0,
-                            v_max:100
-                     })
-              }
-              if(device_type=="GA") {
-                    var addr = $("#GA_addr").val()
-                     var prot = $("#GA_prot").val()
-                     addGA({
-                            addr:addr,
-                            prot:prot,
-                            name:"Name",
-                            type:"turnout_right"
-                     })
-              }
-              if(device_type=="POWER") {
-                    var bus = $("#POWER_bus").val()
-                     addPOWER({
-                            bus:bus,
-                            name:"Name"
-                     })
-              }
-              $("#add_device_container").hide()
-       })
-       $("#add_device_cancel").on("click", function() {
-              $("#add_device_container").hide()
-       })
+        if(command_session.session_id==-1) {
+            $("#add_device_msg").text("Error while adding Power: No connection to server.");
+            return;
+        }
 
-
+        command_session.add_handler_to_queue(function(msg) {
+            $("#add_POWER_button").removeClass("waiting");
+            if(msg.status_code == "200")
+                $("#add_device_msg").text("Successfully added Power.");
+            else
+                $("#add_device_msg").text("Error while adding Power: "+msg.raw);
+        })
+        $("#add_POWER_button").addClass("waiting");
+        command_session.send({action:"INIT", bus:bus, device_group:"POWER", command:""})
+    })
 
        //device events for
        ////////////GL
@@ -280,13 +229,11 @@ $(function() {
                      _f = $(this).text().trim()
                      f[_f.substr(1)]=$GL.data(_f)?1:0
               })
-              console.log(f)
               cmd = [addr, drivemode, v, vmax, f.join(" ").trim()].join(" ")
-              console.log(cmd)
               if(command_session.session_id==-1)
                      return
               command_session.add_handler_to_queue(function(msg) {
-                     console.log("GL changed: ",msg)
+                     console.debug("GL changed: ",msg)
               })
               command_session.send({action:"SET", bus:bus, device_group:"GL", command:cmd})
        }
@@ -345,7 +292,6 @@ $(function() {
               } else {
                      $(this).css("color", "#ccc")
               }
-              //console.log(_f,!_old)
               GL_changed($GL)
        })
 
@@ -359,12 +305,11 @@ $(function() {
               $GA.data("port",port)
 
               cmd = [addr, port, 1, 200].join(" ")
-              console.log(cmd)
               if(command_session.session_id==-1)
                      return
               command_session.add_handler_to_queue(function(msg) {
-                     console.log("GA changed: ",msg)
-       })
+                     console.debug("GA changed: ",msg)
+              })
               command_session.send({action:"SET", bus:bus, device_group:"GA", command:cmd})
        })
 
@@ -376,12 +321,10 @@ $(function() {
               onoff=$POWER.find(".toggle").prop('checked')?"ON":"OFF"
               $POWER.data("onoff",onoff)
 
-
-              //console.log(onoff)
               if(command_session.session_id==-1)
                      return
               command_session.add_handler_to_queue(function(msg) {
-                     console.log("Power changed: ",msg)
+                     console.debug("Power changed: ",msg)
        })
               command_session.send({action:"SET", bus:bus, device_group:"POWER", command:onoff})
        })

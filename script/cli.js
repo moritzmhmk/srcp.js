@@ -86,13 +86,24 @@ $(function() {
 			$(this).val(new_val)
 		}
 	})
+	
+	String.prototype.width = function(font) {
+	  var f = font || '12px arial',
+	      o = $('<div>' + this + '</div>')
+	            .css({'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden', 'font': f})
+	            .appendTo($('body')),
+	      w = o.width();
+
+	  o.remove();
+
+	  return w;
+	}
 
 	var _autoresize = function() {
 		var l = $(this).val().length
 		var w = 0
 		if(l<1) {
 			l=$(this).attr('placeholder').length
-			//String.width(font) -> utils.js
 			w = $(this).attr('placeholder').width($(this).css("font"))
 		} else {
 			w = $(this).val().width($(this).css("font"))

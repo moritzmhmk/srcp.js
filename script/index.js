@@ -119,7 +119,7 @@ INFOSession.prototype.info_handler = function(msg) {
       }
       break
     default:
-      console.log("INFO handler cant handle device_group: "+msg.device_group)
+      console.info("INFO handler cant handle device_group: "+msg.device_group)
   }
 }
 
@@ -157,16 +157,18 @@ COMMANDSession.prototype.log_msg = log_response
 COMMANDSession.prototype.log_cmd = log_command
 
 var open_event = function() {
-  $("#server_settings").hide()
-  $("#server_close_msg").text("")
+  $("#server_connect").removeClass("waiting");
+  $("#server_status").text("Connection established.")
 }
 
 var close_event = function(e) {
-  $("#server_settings").show()
+  $("#settings").removeClass("hidden");
+  $("#background_overlay").removeClass("hidden");
+  $("#server_connect").removeClass("waiting");
   if(e.type=="close")
-    $("#server_close_msg").text("Connection closed!")
+    $("#server_status").text("Connection closed!")
   else
-    $("#server_close_msg").text("Error: "+e.type)
+    $("#server_status").text("Error: "+e.type)
 }
 
 INFOSession.prototype.open_event = open_event
@@ -178,11 +180,12 @@ var info_session = new INFOSession()
 var command_session = new COMMANDSession()
 
 var open_sessions = function() {
+  $("#server_connect").addClass("waiting");
   info_session.open($("#host").val(), $("#port").val())
   command_session.open($("#host").val(), $("#port").val())
 }
 
 $(function() {
-  //open_sessions()//try with standard values
-  $("#open_sessions").on("click", open_sessions)
+  open_sessions()//try with standard values
+  $("#server_connect").on("click", open_sessions)
 })
